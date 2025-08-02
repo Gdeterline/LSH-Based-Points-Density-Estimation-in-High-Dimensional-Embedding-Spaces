@@ -31,6 +31,8 @@ In high-dimensional spaces, traditional density estimation methods like Kernel D
 To address these challenges, we propose a scalable density estimation method leveraging Locality Sensitive Hashing (LSH) with SimHash, which efficiently approximates point densities by grouping similar vectors into hash buckets, thus enabling fast, accurate and scalable density estimation in deep embedding spaces.
 
 
+---
+
 ## II. Features
 - **Locality Sensitive Hashing (LSH)**: Utilizes LSH with SimHash to efficiently group similar points in high-dimensional spaces.
 - **SimHash**: Implements SimHash for hashing high-dimensional vectors, enabling fast similarity search.
@@ -42,7 +44,11 @@ To address these challenges, we propose a scalable density estimation method lev
 
 ## III. Installation
 
+
+---
+
 ## IV. Documentation
+
 ### IV.1. Theoretical Concepts
 This section provides an overview of the theoretical concepts behind the LSH-based point density estimator, including Locality Sensitive Hashing (LSH), SimHash, and density estimation techniques.
 
@@ -164,3 +170,17 @@ This demonstrates how LSH with SimHash can effectively group similar vectors tog
 
 The implementation of the LSH-based point density estimator was made in Python, leveraging libraries like NumPy for efficient numerical computations and collections for managing hash tables. The code is structured to allow easy integration into existing data processing pipelines and can handle large datasets efficiently. 
 
+
+
+---
+
+## VII. License
+
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+---
+
+## VIII. Contact
+
+For any questions, suggestions, or contributions, please feel free to submit an issue or pull request on the GitHub repository. You can also reach out via [email](mailto:guillaumedt1001@gmail.com) or throuh my [LinkedIn](https://www.linkedin.com/in/guillaume-macquart-de-terline-a7b73430b) profile.
+Thank you for your interest in this project! I hope it provides a valuable tool for density estimation in high-dimensional embedding spaces.
