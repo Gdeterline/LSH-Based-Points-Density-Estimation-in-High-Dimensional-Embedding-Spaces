@@ -1,0 +1,28 @@
+import os, sys
+import unittest
+import numpy as np
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  
+from lsh_density.lsh_based_kde import run_high_dim_kde
+
+class TestLSHDensityEstimator(unittest.TestCase):
+    
+    def setUp(self):
+        # Generate a random dataset for testing
+        # Dataset with 1000 samples and 50 dimensions
+        self.X = np.random.randn(1000, 50)
+        # Define parameters for the LSH-based KDE
+        self.hash_bits_per_table = 15
+        self.number_of_hash_tables = 30
+
+    def test_density_estimation(self):
+        densities = run_high_dim_kde(self.X, self.hash_bits_per_table, self.number_of_hash_tables)
+        # Ensure that the output length matches the number of samples
+        self.assertEqual(len(densities), self.X.shape[0], "Densities length should match number of samples")
+        # Ensure that all densities are finite
+        self.assertTrue(np.all(np.isfinite(densities)), "All densities should be finite")
+        # Ensure that all points densities are non-negative
+        self.assertTrue(all(v >= 0 for v in densities), "All densities should be non-negative")
+        
+
+if __name__ == '__main__':
+    unittest.main()

@@ -60,7 +60,7 @@ def run_high_dim_kde(dataset: np.array, hash_bits_per_table: int, number_of_hash
 
     Returns
     -------
-    Returns the list of kernel density estimates
+    Returns the list of points density estimates
 
     """
     hash_planes, hash_tables = ready_hash_tables_functions(hash_bits_per_table, dataset.shape[1], number_of_hash_tables)
