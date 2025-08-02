@@ -98,7 +98,24 @@ where $\text{count}_l(h(\mathbf{x}))$ is the number of points in the bucket corr
 
 5. **Normalization**
 
-Given that the hashing is based on the $\operatorname{sign}(x)$ function, theoretically, the vectors should not need to be normalized. Indeed, the cosine similarity is invariant to the norm of the vectors.
+Given that the hashing is based on the $\mathrm{sign}(x)$ function, theoretically, the vectors should not need to be normalized. Indeed, given that:
+
+$$
+h_j(\mathbf{x}) = 
+\begin{cases}
+1 & \text{if } \mathbf{W}_j \cdot \mathbf{x} \geq 0 \\
+0 & \text{if } \mathbf{W}_j \cdot \mathbf{x} < 0
+\end{cases}
+$$
+
+and 
+
+$$
+\mathbf{W}_j \cdot \mathbf{x} = ||\mathbf{W}_j|| \cdot ||\mathbf{x}|| \cdot \cos(\theta)
+$$
+
+where $\theta$ is the angle between the hyperplane and the vector.
+Thus, given that $||\mathbf{W}_j||$ and $||\mathbf{x}||$ are both always positive, the sign of the dot product depends exclusively on the angle $\theta$ between the hyperplane and the vector. Therefore, normalization is not strictly necessary for the hashing process to work correctly.
 
 6. **Example: Hashing three vectors**
 
