@@ -41,29 +41,55 @@ def compute_densities_dataset(dataset, hash_planes, hash_tables):
 #     return all_counts
 
 
-def run_high_dim_kde(dataset: np.array, hash_bits_per_table: int, number_of_hash_tables: int) -> list:
+def run_high_dim_kde(dataset: np.array, hash_bits_per_table: int, number_of_hash_tables: int, verbose: bool = True) -> list:
     """
     Computes the estimated points density across the dataset in high dimensional space.
 
     Parameters
     ----------
 
-    dataset: np.array[np.array]
-    array of shape (nb_samples, nb_dimensions)
-    dataset input may be composed of normalized or not vectors
+    - dataset: np.array[np.array]
+        array of shape (nb_samples, nb_dimensions)
+        dataset input may be composed of normalized or not vectors
 
-    hash_bits_per_table: int
-    The number of hash bits per table defines the number of buckets: 2^n
+    - hash_bits_per_table: int
+        The number of hash bits per table defines the number of buckets: 2^n
 
-    number_of_hash_tables: int
-    The number of hash tables
+    - number_of_hash_tables: int
+        The number of hash tables
+        
+    - verbose: bool = True
+        Optional parameter to control verbosity of the function.
+        Default is True.
+        If True, prints additional information during the computation
 
     Returns
     -------
     Returns the list of points density estimates
 
     """
+    if verbose:
+        print(f"Running LSH-based KDE with {hash_bits_per_table} hash bits per table and {number_of_hash_tables} hash tables.")
+    if dataset.shape[0] == 0:
+        raise ValueError("The dataset is empty. Please provide a valid dataset with samples.")
+    if dataset.shape[1] == 0:
+        raise ValueError("The dataset has no features. Please provide a valid dataset with features.")
+    if hash_bits_per_table <= 0:
+        raise ValueError("The number of hash bits per table must be a positive integer.")
+    if number_of_hash_tables <= 0:
+        raise ValueError("The number of hash tables must be a positive integer.")
+    if verbose:
+        print("Preparing hash tables and planes...")
     hash_planes, hash_tables = ready_hash_tables_functions(hash_bits_per_table, dataset.shape[1], number_of_hash_tables)
+    if verbose:
+        print("Hash tables and planes prepared.")
+        print("Hashing the dataset...")
     hash_dataset(dataset, hash_planes, hash_tables)
+    if verbose:
+        print("Dataset hashed.")
+        print("Computing densities for the dataset...")
     densities = compute_densities_dataset(dataset, hash_planes, hash_tables)
+    if verbose:
+        print("Densities computed.")
+        print(f"Computed densities using LSH and SimHash for {len(densities)} samples.")
     return densities
