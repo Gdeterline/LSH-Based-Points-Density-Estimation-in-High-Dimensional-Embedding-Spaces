@@ -212,6 +212,12 @@ To generate the synthetic data, we used the `sklearn.mixture.GaussianMixture` cl
 
 To visualize the performance of the LSH-based point density estimator, we plotted the estimated densities against the ground-truth densities of the synthetic dataset. The plots show how well the estimated densities match the true densities, providing a qualitative assessment of the estimator's accuracy.
 
+
+
+
+
+
+
 ---
 
 ## VII. License
