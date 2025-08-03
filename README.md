@@ -15,14 +15,17 @@ We will benchmark its accuracy and runtime against **Kernel Density Estimation (
   - [IV.1. Theoretical Concepts](#theoretical-concepts)
     - [IV.1.1. Theoretical Explanation of Density Estimation with LSH and SimHash](#theoretical-explanation-of-density-estimation-with-lsh-and-simhash)
     - [IV.1.2. Mathematical Formulation](#mathematical-formulation)
-  - [IV.2. Implementation Details](#implementation-details)
-  - [IV.3. Benchmarking](#benchmarking)
-    - [IV.2.1. Synthetic Data Generation](#synthetic-data-generation)
-    - [IV.2.2. Benchmarking against KDE and k-NN](#benchmarking-against-kde-and-k-nn)
-- [V. Usage](#usage)
-- [VI. Conclusion](#conclusion)
-- [VII. License](#license)
-- [VIII. Contact](#contact)
+- [V Implementation Details](#implementation-details)
+- [VI. Performance Assessment](#performance-assessment)
+    - [VI.1. Synthetic Data Generation](#synthetic-data-generation-1)
+    - [VI.2. Plotting the Density Estimates](#plotting-the-density-estimates)
+    - [VI.3. Quantitative Metrics](#quantitative-metrics)
+- [VII. Benchmarking](#benchmarking)
+  - [VII.1. Benchmarking against KDE and k-NN](#benchmarking-against-kde-and-k-nn)
+- [VIII. Usage](#usage)
+- [IX. Conclusion](#conclusion)
+- [X. License](#license)
+- [XI. Contact](#contact)
 
 ---
 
@@ -166,11 +169,48 @@ The two similar vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ hash to the same bucke
 This demonstrates how LSH with SimHash can effectively group similar vectors together while separating dissimilar ones, enabling efficient density estimation in high-dimensional spaces.
 
 
-### IV.2. Implementation Details
+## V. Implementation Details
 
 The implementation of the LSH-based point density estimator was made in Python, leveraging libraries like NumPy for efficient numerical computations and collections for managing hash tables. The code is structured to allow easy integration into existing data processing pipelines and can handle large datasets efficiently. 
 
+The implementation includes the following key components:
 
+**Parameters for LSH:**
+
+```python
+dataset : np.ndarray # Input dataset of shape (N, D) where N is the number of points and D is the embedding dimension
+K : int  # hash bits per table -> nb_buckets = 2**K
+L : int # number of hash tables
+```
+
+The parameters `K` and `L` control the number of bits per hash table and the number of hash tables, respectively. Increasing `K` increases the granularity of the hash buckets, while increasing `L` improves robustness against noise by averaging across multiple tables. Increasing these parameters will lead to more accurate density estimates but at the cost of increased memory usage and computation time.
+
+**Building the hash functions and hash tables:**
+
+The hash functions are built using random hyperplanes sampled from a standard normal distribution. Each hyperplane is used to compute the hash code for each point in the dataset, which is then stored in a hash table. This process is repeated for `L` hash tables, each with its own set of random hyperplanes.
+
+The hash tables are implemented as dictionaries where keys are the hash codes and values are the number of points that hash to that code.
+
+The hash tables and hash functions are built in the `ready_hash_tables_functions` function, which initializes the hash tables and hash functions.
+
+The vectors are then hashed using the `hash_dataset` function, which computes the hash codes for each point in the dataset using the `simhash` function. The `simhash` function computes the hash code for a single point by taking the sign of the dot product with each hyperplane.
+
+The computation of all densities is done in the `compute_densities_dataset` function, which iterates over each point in the dataset, calls in the `estimate_density` function to compute the density estimate for that point, and stores the result in a list.
+
+## VI. Performance assessment
+
+This section describes the benchmarking process used to evaluate the performance of the LSH-based point density estimator on synthetic data generated from a Gaussian Mixture Model (GMM). 
+This will allow us to assess the "absolute" accuracy of the density estimates, by comparing them to the known ground-truth density of the GMM, through both qualitative and quantitative metrics.
+
+### VI.1. Synthetic Data Generation
+
+To evaluate the performance of the LSH-based point density estimator, we generated synthetic datasets using a Gaussian Mixture Model (GMM). The GMM allows us to create datasets with known density distributions, which is essential for benchmarking the accuracy of our density estimates.
+
+To generate the synthetic data, we used the `sklearn.mixture.GaussianMixture` class from the scikit-learn library. That way, we can create a GMM with a specified number of components, each with its own mean and covariance matrix. The GMM is then used to sample points in the embedding space, resulting in a dataset that follows the specified density distribution, thus allowing us to compare the estimated densities against the ground-truth densities.
+
+#### VI.2. Plotting the Density Estimates
+
+To visualize the performance of the LSH-based point density estimator, we plotted the estimated densities against the ground-truth densities of the synthetic dataset. The plots show how well the estimated densities match the true densities, providing a qualitative assessment of the estimator's accuracy.
 
 ---
 
