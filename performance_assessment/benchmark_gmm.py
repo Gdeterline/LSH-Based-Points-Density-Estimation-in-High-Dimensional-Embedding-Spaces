@@ -3,6 +3,7 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.mixture import GaussianMixture
+from sklearn.datasets import make_blobs
 from scipy.stats import spearmanr, pearsonr
 
 
@@ -53,6 +54,51 @@ def sample_gmm(n_samples: int = 10000, n_features: int = 50, n_components: int =
     if verbose:
         print(f"Computed densities for the samples.")
     return samples, densities
+
+def sample_blobs(n_samples: int = 10000, n_features: int = 50, clusters_centers: int = 1, cluster_std: float = 1.0, random_state=None, verbose: bool = True):
+    """
+    This function creates a dataset of samples using the make_blobs function from sklearn.
+
+    Parameters
+    ------------
+    - n_samples: int = 10000
+        number of samples to generate
+        
+    - n_features: int = 50
+        number of features for each sample
+    
+    - cluster_centers: int = 1
+        number of clusters to generate
+        
+    - cluster_std: float = 1.0
+        standard deviation of the clusters    
+    
+    - random_state: int or None
+        seed for reproducibility
+    
+    - verbose: bool = True
+        Optional parameter to control verbosity of the function.
+        If True, prints additional information during the computation
+    
+    Returns
+    ------------
+    - samples: np.ndarray
+        samples generated from the GMM
+    
+    - densities: list
+        density values for each sample computed using the GMM
+    """
+    if verbose:
+        print(f"Generating {n_samples} samples with {n_features} features each, "
+              f"{clusters_centers} cluster centers, and standard deviation {cluster_std}.")
+    
+    X, labels = make_blobs(n_samples=n_samples, n_features=n_features, centers=clusters_centers, cluster_std=cluster_std, random_state=random_state)
+    
+    if verbose:
+        print(f"Generated {n_samples} samples with {n_features} features each.")
+    
+    return X, labels.tolist()
+    
 
 
 def run_gmm_benchmark(
