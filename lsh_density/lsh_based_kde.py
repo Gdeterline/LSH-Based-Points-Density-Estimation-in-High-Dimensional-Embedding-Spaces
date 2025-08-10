@@ -1,3 +1,4 @@
+import math
 import numpy as np
 from collections import defaultdict
 
@@ -90,7 +91,7 @@ def estimate_bucket_count(query, hash_planes, hash_tables):
     - bucket_count: float
         The estimated bucket count for the query vector, averaged across all hash tables.
     """
-    query = query / np.linalg.norm(query)
+    #query = query / np.linalg.norm(query) # Normalizing the query vector is not necessary for LSH-based KDE, but can be done if needed.
     counts = []
     for l in range(len(hash_tables)):
         h = simhash(vector=query, planes=hash_planes[l])
@@ -207,3 +208,27 @@ def run_high_dim_kde(dataset: np.array, hash_bits_per_table: int, number_of_hash
         print(f"Computed densities using LSH and SimHash for {len(densities)} samples.")
     return densities
 
+
+def lsh_granularity(n_bits: int = 16, p_target: float = 0.5):
+    """
+    Computes the granularity of LSH-based KDE given the number of bits and target probability.
+    The granularity is defined as the angle θ such that the cosine of θ gives the threshold for the cosine similarity.
+    The relationship is derived from the equation (1 - θ/π)^n_bits = p_target.
+    
+    Parameters
+    ----------
+    - n_bits: int = 16
+        The number of bits used in the LSH hash function.
+    - p_target: float = 0.5
+        The target probability for the cosine similarity threshold. Default is 0.5.
+        
+    Returns
+    -------
+    - theta: float
+        The angle threshold θ in radians.
+    - cosine_threshold: float
+        The cosine threshold corresponding to the angle θ.
+    """
+    theta = math.pi * (1 - p_target ** (1 / n_bits))
+    cosine_threshold = math.cos(theta)
+    return theta, cosine_threshold
