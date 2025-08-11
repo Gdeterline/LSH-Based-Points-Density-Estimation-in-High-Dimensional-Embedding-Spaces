@@ -1,0 +1,59 @@
+import os, sys
+import numpy as np
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from lsh_density.lsh_based_kde import run_high_dim_kde
+
+def downsample_dataset(dataset: np.array, relative_densities: list, downsampling_percentage: int, hash_bits_per_table: int, number_of_hash_tables: int) -> tuple[np.array, list, list]:
+    """
+    This function returns the downsampled list of vectors and their downsampled relative densities.
+    It computes, for each point, its probability to be kept in the "new" downsampled dataset.
+
+    Parameters
+    ----------
+
+    - dataset: np.array
+    The dataset array, of shape (n_samples, n_features)
+
+    - relative densities: list
+    The list of relative densities of each point, order in the same way as the dataset array
+
+    - downsampling_percentage: int 
+    The downsampling ratio.
+    Example (50 to reduce the dataset size by half, 25 by 4, etc.)
+
+    - hash_bits_per_table: int
+    The number of hash bits per table defines the number of buckets: 2^n
+    It defines the "precision" or granularity of each hash key. The higher the number of hash bits per table, the higher the granularity (and the computation cost)
+
+    - number_of_hash_tables: int
+    The number of hash tables on which to compute the high dimensional relative density estimation. A higher value increases the robustness of the results, but also the computation cost.
+
+    Returns
+    -------
+
+    - downsampled_dataset_array: np.array
+    The array of downsampled dataset, of shape (n_samples_downsampled, n_features)
+
+    - downsampled_relative_densities: list
+    The list of downsampled relative densities, ordered in the same way as downsampled_dataset_array and sample_indices_list
+
+    - sample_indices_list: list
+    The list of indices matching the downsampled_dataset_array and downsampled_relative_densities (to further downsample other lists (uris, filenames, etc.) if needed.)
+
+    """
+    # invert relative density to define the probability to be kept: get lower sampling chance in dense areas, and higher sampling chance in less dense areas
+    inverse_densities = [1/(relative_density + 1) for relative_density in relative_densities]
+    probabilities = [inverse_density/np.sum(inverse_densities) for inverse_density in inverse_densities]
+
+    # sample a fixed number of points based on the proportion of data to keep and on the probabilities to be kept
+    sample_float = 1 - (downsampling_percentage/100) # proportion of data to keep
+    sample_size = int(len(relative_densities) * sample_float)
+    sample_indices = np.random.choice(len(relative_densities), size=sample_size, p=probabilities, replace=False)
+    sample_indices_list = sample_indices.tolist()
+    downsampled_dataset = [dataset[i] for i in sample_indices]
+    downsampled_dataset_array = np.array(downsampled_dataset)
+
+    downsampled_nd_densities = run_high_dim_kde(dataset=dataset, hash_bits_per_table=hash_bits_per_table, number_of_hash_tables=number_of_hash_tables)
+    downsampled_relative_densities = [density/len(downsampled_nd_densities) for density in downsampled_nd_densities]
+    return downsampled_dataset_array, downsampled_relative_densities, sample_indices_list
