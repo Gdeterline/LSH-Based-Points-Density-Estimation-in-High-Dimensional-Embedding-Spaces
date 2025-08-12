@@ -212,7 +212,13 @@ Starting with 3 dimensional embeddings was chosen for two main reasons:
 - First, it allows for easy visualization of the density estimates in 3D plots, which is useful for qualitative assessment.
 - Second, it serves as a good starting point for benchmarking the performance of the LSH-based estimator. Given that the LSH-based estimator works with SimHash, 3D embeddings are the minimum dimensionality required to effectively demonstrate the locality-sensitive properties of the hashing function.
 
-The following plot displays the results for such a dataset.
+Then, we progressively increased the dataset size to ranges of 15000 to 30000 points, where each embedding is of dimension 50, to assess the scalability and performance of the estimator in higher-dimensional spaces.
+
+#### VI.2. Plotting the Density Estimates
+
+To visualize the performance of the LSH-based point density estimator, we plotted the estimated densities against the ground-truth densities of the synthetic dataset. The plots show how well the estimated densities match the true densities, providing a qualitative assessment of the estimator's accuracy.
+
+The following plot displays the results for the first dataset.
 
 ![Ground Truth vs LSH Density Estimate 3D plot comparison](/results/plots/ground_truth_vs_lsh_density_3d.png)
 
@@ -220,14 +226,6 @@ The left-hand side of the plot displays the 3D data points, colored by their gro
 The right-hand side of the plot displays the 3D data points, colored by their LSH-based density estimates.
 
 The LSH density estimates per point seem accurate with respect to the other points (the colorscales), when comparing to the ground truth densities. Yet, it seems that the density values are different though within acceptable range. Depending on the use case, this can or cannot be problematic. This issue will be investigated further later on.
-
-Then, we progressively increased the dataset size to ranges of 15000 to 30000 points, where each embedding is of dimension 50, to assess the scalability and performance of the estimator in higher-dimensional spaces.
-
-#### VI.2. Plotting the Density Estimates
-
-To visualize the performance of the LSH-based point density estimator, we plotted the estimated densities against the ground-truth densities of the synthetic dataset. The plots show how well the estimated densities match the true densities, providing a qualitative assessment of the estimator's accuracy.
-
-
 
 
 
