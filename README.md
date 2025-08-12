@@ -151,19 +151,27 @@ $$
 
 We can compute the hash codes for each vector using the sign of the dot product with the hyperplanes:
 
+<p align="center">
+
 | Vector      | $\mathbf{W}_1 \cdot \mathbf{x}$ | $\mathbf{W}_2 \cdot \mathbf{x}$ | $\mathbf{W}_3 \cdot \mathbf{x}$ |
 |-------------|:------------------------------:|:-------------------------------:|:-------------------------------:|
 | $\mathbf{x}_1$ | $0.5*1 + (-0.5)*2 + 0.5*3 + (-0.5)*4 + 0.5*5 = 0.5 - 1 + 1.5 - 2 + 2.5 = 1.5$ | $0.1*1 + 0.2*2 + 0.3*3 + 0.4*4 + 0.5*5 = 0.1 + 0.4 + 0.9 + 1.6 + 2.5 = 5.5$ | $-0.2*1 + 0.3*2 + (-0.1)*3 + 0.4*4 + (-0.5)*5 = -0.2 + 0.6 - 0.3 + 1.6 - 2.5 = -0.8$ |
 | $\mathbf{x}_2$ | $0.5*1.1 + (-0.5)*2.1 + 0.5*3.1 + (-0.5)*4.1 + 0.5*5.1 = 0.55 - 1.05 + 1.55 - 2.05 + 2.55 = 1.55$ | $0.1*1.1 + 0.2*2.1 + 0.3*3.1 + 0.4*4.1 + 0.5*5.1 = 0.11 + 0.42 + 0.93 + 1.64 + 2.55 = 5.65$ | $-0.2*1.1 + 0.3*2.1 + (-0.1)*3.1 + 0.4*4.1 + (-0.5)*5.1 = -0.22 + 0.63 - 0.31 + 1.64 - 2.55 = -0.81$ |
 | $\mathbf{x}_3$ | $0.5*53 + (-0.5)*21 + 0.5*(-42) + (-0.5)*(-7) + 0.5*2 = 26.5 - 10.5 - 21 + 3.5 + 1 = 45$ | $0.1*53 + 0.2*21 + 0.3*(-42) + 0.4*(-7) + 0.5*2 = 5.3 + 4.2 - 12.6 - 2.8 + 1 = 35$ | $-0.2*53 + 0.3*21 + (-0.1)*(-42) + 0.4*(-7) + (-0.5)*2 = -10.6 + 6.3 + 4.2 - 2.8 - 1 = -30$ |
 
+</p>
+
 Given the dot products, we can compute the sign of each dot product to get the hash codes:
+
+<p align="center">
 
 | Vector      | $\mathbf{W}_1 \cdot \mathbf{x}$ | $\mathbf{W}_2 \cdot \mathbf{x}$ | $\mathbf{W}_3 \cdot \mathbf{x}$ | Hash Code |
 |-------------|:------------------------------:|:-------------------------------:|:-------------------------------:|:---------:|
 | $\mathbf{x}_1$ | $1.5$ | $5.5$ | $-0.8$ | $(1, 1, 0)$ |
 | $\mathbf{x}_2$ | $1.55$ | $5.65$ | $-0.81$ | $(1, 1, 0)$ |    
 | $\mathbf{x}_3$ | $45$ | $35$ | $-30$ | $(1, 1, 1)$ |
+
+</p>
 
 The two similar vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ hash to the same bucket $(1, 1, 0)$, while the dissimilar vector $\mathbf{x}_3$ hashes to a different bucket $(1, 1, 1)$.
 This demonstrates how LSH with SimHash can effectively group similar vectors together while separating dissimilar ones, enabling efficient density estimation in high-dimensional spaces.
@@ -220,7 +228,11 @@ To visualize the performance of the LSH-based point density estimator, we plotte
 
 The following plot displays the results for the first dataset.
 
-![Ground Truth vs LSH Density Estimate 3D plot comparison](/results/plots/ground_truth_vs_lsh_density_3d.png)
+<p align="center">
+
+  ![Ground Truth vs LSH Density Estimate 3D plot comparison](/results/plots/ground_truth_vs_lsh_density_3d.png)
+
+</p>
 
 The left-hand side of the plot displays the 3D data points, colored by their ground truth densities.
 The right-hand side of the plot displays the 3D data points, colored by their LSH-based density estimates.
@@ -228,18 +240,62 @@ The right-hand side of the plot displays the 3D data points, colored by their LS
 The LSH density estimates per point seem accurate with respect to the other points (the colorscales), when comparing to the ground truth densities. Yet, it seems that the density values are different though within acceptable range. Depending on the use case, this can or cannot be problematic. This issue will be investigated further later on.
 
 
+#### VI.3. Quantitative Metrics
 
+Several quantitative metrics can be used to assess the performance of the LSH-based Density Estimator. Among these are:
+- **Mean Absolute Error (MAE)**
+
+  $$
+  \text{MAE} = \frac{1}{N} \sum_{i=1}^N \left| \hat{d}_i - d_i \right|
+  $$
+
+  The Mean Absolute Error measures the average absolute difference between the estimated densities $\hat{d}_i$ and the ground truth $d_i$. Lower values indicate more accurate estimates.
+
+- **Root Mean Squared Error (RMSE)**
+
+  $$
+  \text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^N \left( \hat{d}_i - d_i \right)^2 }
+  $$
+
+  The Root Mean Squared Error is similar to MAE but penalizes large errors more heavily due to the square root. Lower values indicate fewer large deviations from the ground truth.
+
+- **Pearson Correlation Coefficient**
+
+  $$
+  r = \frac{\text{cov}(\hat{d}, d)}{\sigma_{\hat{d}} \sigma_d}
+  $$
+
+  The Pearson Correlation Coefficient measures how well the variations in the estimated densities match the variations in the ground truth. Values close to $1$ indicate strong agreement.  
+
+
+For our use-case, **low MAE and RMSE values** indicate that the algorithm produces density values that are numerically close to the ground-truth densities across all points, with few large deviations. A **Pearson correlation coefficient close to 1** means that the estimator correctly captures the relative variations in density across the dataset — high-density regions and low-density regions are identified consistently with the ground truth. 
+
+If we refer back to the plot provided as example, we can expect, given the qualitative assessment, to have a Pearson correlation coefficient value close to 1, but slightly worse results in terms of MAE and RMSE values. These comments are more detailed in the [3D samples ground truth benchmark](/performance_assessment/benchmark_ground_truth_3d.ipynb).
+
+---
+
+## VII. Benchmarking
 
 
 ---
 
-## VII. License
+## VIII. Usage
+
+
+---
+
+## IX. Conclusion
+
+
+---
+
+## X. License
 
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## VIII. Contact
+## XI. Contact
 
 For any questions, suggestions, or contributions, please feel free to submit an issue or pull request on the GitHub repository. You can also reach out via [email](mailto:guillaumedt1001@gmail.com) or throuh my [LinkedIn](https://www.linkedin.com/in/guillaume-macquart-de-terline-a7b73430b) profile.
 Thank you for your interest in this project! I hope it provides a valuable tool for density estimation in high-dimensional embedding spaces.
