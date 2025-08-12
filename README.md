@@ -204,9 +204,15 @@ This will allow us to assess the "absolute" accuracy of the density estimates, b
 
 ### VI.1. Synthetic Data Generation
 
-To evaluate the performance of the LSH-based point density estimator, we generated synthetic datasets using a Gaussian Mixture Model (GMM). The GMM allows us to create datasets with known density distributions, which is essential for benchmarking the accuracy of our density estimates.
+To evaluate the performance of the LSH-based point density estimator, we generated synthetic datasets using sklearn's `make_blobs` function, which creates isotropic Gaussian blobs for clustering. 
+The datasets are each composed of several clusters, each of different sizes and densities, allowing us to assess the estimator's performance across varying conditions.
 
-To generate the synthetic data, we used the `sklearn.mixture.GaussianMixture` class from the scikit-learn library. That way, we can create a GMM with a specified number of components, each with its own mean and covariance matrix. The GMM is then used to sample points in the embedding space, resulting in a dataset that follows the specified density distribution, thus allowing us to compare the estimated densities against the ground-truth densities.
+The initial performance assessment was conducted on a relatively small dataset of size within the range of 2500 to 10000 points, with embeddings of dimension 3.
+Starting with 3 dimensional embeddings was chosen for two main reasons:
+- First, it allows for easy visualization of the density estimates in 3D plots, which is useful for qualitative assessment.
+- Second, it serves as a good starting point for benchmarking the performance of the LSH-based estimator. Given that the LSH-based estimator works with SimHash, 3D embeddings are the minimum dimensionality required to effectively demonstrate the locality-sensitive properties of the hashing function.
+
+Then, we progressively increased the dataset size to ranges of 15000 to 30000 points, where each embedding is of dimension 50, to assess the scalability and performance of the estimator in higher-dimensional spaces.
 
 #### VI.2. Plotting the Density Estimates
 
