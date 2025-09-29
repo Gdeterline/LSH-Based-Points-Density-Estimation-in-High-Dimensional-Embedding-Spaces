@@ -1,4 +1,4 @@
-# LSH-Based Points Density Estimation in High-Dimensional Embedding Spaces
+# High-Dimensional Embedding Clustering and Density Estimation – Research Project
  
 This project implements a fast and scalable point density estimator using **Locality Sensitive Hashing (LSH)** with **SimHash**, designed for high-dimensional spaces. The estimator is particularly useful for applications like clustering, anomaly detection, and data visualization in large datasets.
 
@@ -8,28 +8,36 @@ We will benchmark its accuracy and runtime against **Kernel Density Estimation (
 
 ## Table of Contents
 
-- [I. Introduction](#introduction)
-- [II. Features](#features)
-- [III. Installation](#installation)
-- [IV. Documentation](#documentation)
-  - [IV.1. Theoretical Concepts](#theoretical-concepts)
-    - [IV.1.1. Theoretical Explanation of Density Estimation with LSH and SimHash](#theoretical-explanation-of-density-estimation-with-lsh-and-simhash)
-    - [IV.1.2. Mathematical Formulation](#mathematical-formulation)
-- [V Implementation Details](#implementation-details)
-- [VI. Performance Assessment](#performance-assessment)
-    - [VI.1. Synthetic Data Generation](#synthetic-data-generation-1)
-    - [VI.2. Plotting the Density Estimates](#plotting-the-density-estimates)
-    - [VI.3. Quantitative Metrics](#quantitative-metrics)
-- [VII. Benchmarking](#benchmarking)
-  - [VII.1. Benchmarking against KDE and k-NN](#benchmarking-against-kde-and-k-nn)
-- [VIII. Time of Computation Assessment](#time-of-computation-assessment)
-  - [VIII.1. Time Complexity Analysis](#time-complexity-analysis)
-  - [VIII.2. Empirical Time Measurement](#empirical-time-measurement)
+- [A. Points Density Estimator](#a-points-density-estimator)
+  - [I. Introduction](#i-introduction)
+  - [II. Features](#ii-features)
+  - [III. Installation](#iii-installation)
+  - [IV. Documentation](#iv-documentation)
+    - [IV.1. Theoretical Concepts](#iv1-theoretical-concepts)
+      - [IV.1.1. Theoretical Explanation of Density Estimation with LSH and SimHash](#iv11-theoretical-explanation-of-density-estimation-with-lsh-and-simhash)
+      - [IV.1.2. Mathematical Formulation](#iv12-mathematical-formulation)
+  - [V Implementation Details](#v-implementation-details)
+  - [VI. Performance Assessment](#vi-performance-assessment)
+      - [VI.1. Synthetic Data Generation](#vi1-synthetic-data-generation-1)
+      - [VI.2. Plotting the Density Estimates](#vi2-plotting-the-density-estimates)
+      - [VI.3. Quantitative Metrics](#vi3-quantitative-metrics)
+  - [VII. Benchmarking](#vii-benchmarking)
+    - [VII.1. Benchmarking against KDE and k-NN](#vii1-benchmarking-against-kde-and-k-nn)
+  - [VIII. Time of Computation Assessment](#viii-time-of-computation-assessment)
+    - [VIII.1. Time Complexity Analysis](#viii1-time-complexity-analysis)
+    - [VIII.2. Empirical Time Measurement](#viii2-empirical-time-measurement)
+
+- [B. LSH-based Clustering](#b-lsh-based-clustering)
+  - [I. Introduction](#i-introduction-2)
+
+
 - [IX. Conclusion](#conclusion)
 - [X. License](#license)
 - [XI. Contact](#contact)
 
 ---
+
+# A. Points Density Estimator
 
 ## I. Introduction
 In high-dimensional spaces, traditional density estimation methods like Kernel Density Estimation (KDE) and k-NN can struggle with performance and accuracy due to the curse of dimensionality. Indeed, as the number of dimensions increases, data becomes increasingly sparse, and these methods require exponentially more samples to produce reliable estimates. This sparsity leads to poor generalization and high computational costs, especially in deep embedding spaces where data is represented by high-dimensional vectors learned by neural networks.
@@ -285,7 +293,11 @@ If we refer back to the plot provided as example, we can expect, given the quali
 
 The goal of this section is to compare the time taken to compute the ground truth density estimation using cosine similarity against the time taken by the LSH-based density estimation method. This comparison will help illustrate the efficiency of the LSH approach in high-dimensional spaces, and highlight its value as a scalable alternative to traditional methods.
 
-### VIII.1. Empirical Time Measurement
+### VIII.1. Time Complexity Analysis
+
+---
+
+### VIII.2. Empirical Time Measurement
 
 To measure the time taken by both methods, we will use Python's `time` module to record the start and end times of each density estimation process. The time taken for each method will be calculated as the difference between the end and start times. We will compute these times for a number of datasets of increasing size, for a fixed embedding dimension of 50. 
 
@@ -307,6 +319,18 @@ Let be:
 Though the number of samples ranges only from 2000 to 20000 samples (due to computational constraints), we can still observe that $f$ grows significantly faster than $g$, especially as the number of samples increases. Indeed, the ground truth method involves computing pairwise cosine similarities, which has a time complexity of $O(n^2)$, where $n$ is the number of samples, meanwhile the LSH method has a lower time complexity due to its hashing mechanism. The $g$ function seems to grow almost linearly with the number of samples, indicating that the LSH method scales much better with larger datasets.
 
 Somewhere around 13000 samples, the time taken by both methods intersects, indicating that for datasets larger than this size, the LSH method becomes significantly more efficient than the ground truth method. This also means that for smaller datasets, the overhead of setting up the LSH structure takes unnecessarily more time than simply computing the ground truth. Still, we can note that the computation time for the LSH method remains relatively low (and close from) the time taken for the ground truth method for small datasets, making it a viable option even when the dataset size is not very large.
+
+---
+
+# B. LSH-based Clustering
+
+## I. Introduction
+
+Clustering in high-dimensional spaces is a challenging task due to the curse of dimensionality, which can lead to poor performance of traditional clustering algorithms. To address this challenge, we propose a clustering method based on Locality Sensitive Hashing (LSH) with SimHash, which efficiently groups similar points into clusters by leveraging the properties of LSH.
+
+The idea behind the clustering algorithm developed here is the same one that lies behind the density estimation method. Indeed, similar vectors (in terms of cosine similarity) are more likely to hash to the same bucket across multiple hash tables. Therefore, we can use the hash buckets to define clusters of similar points. The key difference with the density estimation method is that instead of averaging the counts across multiple hash tables to get a density estimate, we can use the hash buckets to define clusters of points. Points that hash to the same bucket in multiple hash tables are likely to be similar and can be grouped together into a cluster.
+
+
 
 ---
 
