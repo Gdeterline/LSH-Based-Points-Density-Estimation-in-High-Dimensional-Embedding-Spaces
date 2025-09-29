@@ -328,8 +328,17 @@ Somewhere around 13000 samples, the time taken by both methods intersects, indic
 
 Clustering in high-dimensional spaces is a challenging task due to the curse of dimensionality, which can lead to poor performance of traditional clustering algorithms. To address this challenge, we propose a clustering method based on Locality Sensitive Hashing (LSH) with SimHash, which efficiently groups similar points into clusters by leveraging the properties of LSH.
 
-The idea behind the clustering algorithm developed here is the same one that lies behind the density estimation method. Indeed, similar vectors (in terms of cosine similarity) are more likely to hash to the same bucket across multiple hash tables. Therefore, we can use the hash buckets to define clusters of similar points. The key difference with the density estimation method is that instead of averaging the counts across multiple hash tables to get a density estimate, we can use the hash buckets to define clusters of points. Points that hash to the same bucket in multiple hash tables are likely to be similar and can be grouped together into a cluster.
+## II. The idea behind the clustering...
 
+The idea behind the clustering algorithm developed here is the same one that lies behind the density estimation method. Indeed, similar vectors (in terms of cosine similarity) are more likely to hash to the same bucket across multiple hash tables. Therefore, we can use the hash buckets to define clusters of similar points. The key difference with the density estimation method is that instead of storing the number of points in each bucket to get a density estimate, we can use the hash buckets to define clusters of points. Points that hash to the same bucket in multiple hash tables are likely to be similar and can be grouped together into a cluster.
+
+The fact there are multiple hash tables in this model makes it an ensemble learning method. Like the Random Forest model, we could imagine proceeding to appointing a sample to its cluster with a majority vote. That way, each hash table can contribute to the final clustering decision, leading to a robust prediction.
+
+## III. Hyperparameters
+
+The main hyperparameters of this model would be the following (sorted in order of importance):
+- K: number of hash bits per table
+- L: number of hash tables
 
 
 ---
