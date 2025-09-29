@@ -29,11 +29,13 @@ We will benchmark its accuracy and runtime against **Kernel Density Estimation (
 
 - [B. LSH-based Clustering](#b-lsh-based-clustering)
   - [I. Introduction](#i-introduction-2)
+  - [II. The idea behind the clustering...](#ii-the-idea-behind-the-clustering)
+  - [III. Hyperparameters](#iii-hyperparameters)
 
 
-- [IX. Conclusion](#conclusion)
-- [X. License](#license)
-- [XI. Contact](#contact)
+- [C. Conclusion](#c-conclusion)
+- [D. License](#d-license)
+- [E. Contact](#e-contact)
 
 ---
 
@@ -343,18 +345,18 @@ The main hyperparameters of this model would be the following (sorted in order o
 
 ---
 
-## IX. Conclusion
+# C. Conclusion
 
 
 ---
 
-## X. License
+# D. License
 
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## XI. Contact
+# E. Contact
 
-For any questions, suggestions, or contributions, please feel free to submit an issue or pull request on the GitHub repository. You can also reach out via [email](mailto:guillaumedt1001@gmail.com) or throuh my [LinkedIn](https://www.linkedin.com/in/guillaume-macquart-de-terline-a7b73430b) profile.
+For any questions, suggestions, or contributions, please feel free to submit an issue or pull request on the GitHub repository. You can also reach out via [email](mailto:guillaumedt1001@gmail.com) or through my [LinkedIn](https://www.linkedin.com/in/guillaume-macquart-de-terline-a7b73430b) profile.
 Thank you for your interest in this project! I hope it provides a valuable tool for density estimation in high-dimensional embedding spaces.
