@@ -22,7 +22,9 @@ We will benchmark its accuracy and runtime against **Kernel Density Estimation (
     - [VI.3. Quantitative Metrics](#quantitative-metrics)
 - [VII. Benchmarking](#benchmarking)
   - [VII.1. Benchmarking against KDE and k-NN](#benchmarking-against-kde-and-k-nn)
-- [VIII. Usage](#usage)
+- [VIII. Time of Computation Assessment](#time-of-computation-assessment)
+  - [VIII.1. Time Complexity Analysis](#time-complexity-analysis)
+  - [VIII.2. Empirical Time Measurement](#empirical-time-measurement)
 - [IX. Conclusion](#conclusion)
 - [X. License](#license)
 - [XI. Contact](#contact)
@@ -279,8 +281,32 @@ If we refer back to the plot provided as example, we can expect, given the quali
 
 ---
 
-## VIII. Usage
+## VIII. Time of Computation Assessment
 
+The goal of this section is to compare the time taken to compute the ground truth density estimation using cosine similarity against the time taken by the LSH-based density estimation method. This comparison will help illustrate the efficiency of the LSH approach in high-dimensional spaces, and highlight its value as a scalable alternative to traditional methods.
+
+### VIII.1. Empirical Time Measurement
+
+To measure the time taken by both methods, we will use Python's `time` module to record the start and end times of each density estimation process. The time taken for each method will be calculated as the difference between the end and start times. We will compute these times for a number of datasets of increasing size, for a fixed embedding dimension of 50. 
+
+<ins>Note:</ins> It would also be interesting to analyze the time taken as the embedding dimension increases, for a fixed dataset size. This could be explored in future work.
+
+The figure below illustrates the time taken for both methods as the number of samples increases.
+
+<p align="center">
+  
+  ![Time of computation assessment for ground truth density estimation vs LSH density estimation in high-dimensional spaces](/results/plots/time_comparison_lsh_vs_ground_truth.png)
+
+</p>
+
+The graph above shows the time taken for both the ground truth density estimation and the LSH-based density estimation as the number of samples increases.
+Let be: 
+- $f$ the function that maps the number of samples to the time taken by the ground truth method
+- $g$ the function that maps the number of samples to the time taken by the LSH method
+
+Though the number of samples ranges only from 2000 to 20000 samples (due to computational constraints), we can still observe that $f$ grows significantly faster than $g$, especially as the number of samples increases. Indeed, the ground truth method involves computing pairwise cosine similarities, which has a time complexity of $O(n^2)$, where $n$ is the number of samples, meanwhile the LSH method has a lower time complexity due to its hashing mechanism. The $g$ function seems to grow almost linearly with the number of samples, indicating that the LSH method scales much better with larger datasets.
+
+Somewhere around 13000 samples, the time taken by both methods intersects, indicating that for datasets larger than this size, the LSH method becomes significantly more efficient than the ground truth method. This also means that for smaller datasets, the overhead of setting up the LSH structure takes unnecessarily more time than simply computing the ground truth. Still, we can note that the computation time for the LSH method remains relatively low (and close from) the time taken for the ground truth method for small datasets, making it a viable option even when the dataset size is not very large.
 
 ---
 
