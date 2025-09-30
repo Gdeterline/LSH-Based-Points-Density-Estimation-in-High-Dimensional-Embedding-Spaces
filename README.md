@@ -342,6 +342,15 @@ The main hyperparameters of this model would be the following (sorted in order o
 - K: number of hash bits per table
 - L: number of hash tables
 
+**K: number of hash bits per table**
+Increasing K increases the granularity of the hash buckets, leading to more precise clustering. However, it also increases the number of possible buckets exponentially (2^K), which can lead to sparsity and overfitting if K is too large relative to the dataset size.
+Yet, after having computed the density estimates with the LSH method, we can see that many buckets remain empty. Therefore, for small values of K, we can expect many points to hash to the same bucket, leading to larger clusters. Conversely, for large values of K, we can expect smaller clusters, up to a certain point where rather than forming more smaller clusters, most new buckets created will remain empty, adding only computational overhead without improving clustering quality.
+
+**L: number of hash tables**
+Increasing L improves the robustness of the clustering by averaging over multiple independent hash tables. This helps mitigate the noise and variability introduced by the random nature of the hash functions. However, increasing L also increases the computational cost and memory usage, as more hash tables need to be maintained. A higher L can also mitigate the phenomenon discussed above regarding K.
+
+
+
 
 ---
 
